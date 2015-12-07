@@ -14,7 +14,7 @@ import android.widget.Toast;
 /**
  * Created by tomer on 11/7/15.
  */
-public class MyReceiver extends BroadcastReceiver {
+public class CameraHandlerReceiver extends BroadcastReceiver {
     static int countPowerOff = 0;
     PowerManager pm;
     KeyguardManager keyguardManager;
@@ -39,7 +39,8 @@ public class MyReceiver extends BroadcastReceiver {
         Toast.makeText(context, "STARTED SERVICE", Toast.LENGTH_LONG).show();
         Log.v("onReceive", "Power button is pressed." + countPowerOff);
         countPowerOff++;
-        handler.postDelayed(runnable, context.getResources().getInteger(R.integer.timeout));
+        Log.d("Delay is ", String.valueOf(Preferences.cameraClickDelay));
+        handler.postDelayed(runnable, Preferences.cameraClickDelay);
         if (countPowerOff == 2) {
             keyguardLock.reenableKeyguard();
             keyguardLock.disableKeyguard();
@@ -52,5 +53,4 @@ public class MyReceiver extends BroadcastReceiver {
             handler.removeCallbacks(runnable);
         }
     }
-
 }
