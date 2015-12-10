@@ -48,6 +48,8 @@ public class CameraHandlerReceiver extends BroadcastReceiver {
         Log.d("Delay is ", String.valueOf(Preferences.cameraClickDelay));
         handler.postDelayed(runnable, Preferences.cameraClickDelay);
         if (countPowerOff == 2) {
+            this.mWakeLock.release();
+            this.mWakeLock.acquire();
             keyguardLock.reenableKeyguard();
             keyguardLock.disableKeyguard();
             System.out.println("OPENING CAMERA");
@@ -56,8 +58,6 @@ public class CameraHandlerReceiver extends BroadcastReceiver {
             context.startActivity(cameraIntent);
             countPowerOff = 0;
             handler.removeCallbacks(runnable);
-            this.mWakeLock.release();
-            this.mWakeLock.acquire();
         }
     }
 
@@ -74,9 +74,7 @@ public class CameraHandlerReceiver extends BroadcastReceiver {
         return instances;
     }
 
+    public CameraHandlerReceiver() {
 
-
-    private CameraHandlerReceiver() {
-        // Not allowed
     }
 }

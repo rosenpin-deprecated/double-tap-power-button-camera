@@ -37,10 +37,16 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     }
 
     public void startBrodcastReciever() {
+        killBrodcastReciever();
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         mReceiver =  CameraHandlerReceiver.createMyObject();
-        registerReceiver(mReceiver, filter);
+        try {
+            registerReceiver(mReceiver, filter);
+        }catch (Exception e){
+            System.out.println("Error, retrying..");
+            startBrodcastReciever();
+        }
         Toast(getApplicationContext(), "Started, please try to double tap your power button");
     }
 
@@ -72,5 +78,12 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             startBrodcastReciever();
         } else
             killBrodcastReciever();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        killBrodcastReciever();
+        startBrodcastReciever();
     }
 }
