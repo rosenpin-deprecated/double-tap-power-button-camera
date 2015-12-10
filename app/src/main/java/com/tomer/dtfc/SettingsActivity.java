@@ -40,7 +40,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         killBrodcastReciever();
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
-        mReceiver =  CameraHandlerReceiver.createMyObject();
+        mReceiver =  CameraHandlerReceiver.createMyObject(getApplicationContext());
         try {
             registerReceiver(mReceiver, filter);
         }catch (Exception e){
@@ -83,7 +83,18 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        killBrodcastReciever();
-        startBrodcastReciever();
+        Toast.makeText(getApplicationContext(),"You closed the app, it won't work now",Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Toast.makeText(getApplicationContext(),"You closed the app, it won't work now",Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Toast.makeText(getApplicationContext(),"You closed the app, it won't work now",Toast.LENGTH_LONG).show();
     }
 }

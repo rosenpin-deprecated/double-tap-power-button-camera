@@ -42,7 +42,7 @@ public class CameraHandlerReceiver extends BroadcastReceiver {
             keyguardLock = keyguardManager.newKeyguardLock("TAG");
             this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "Turn Screen On");
         }
-        Toast(context, "STARTED SERVICE");
+        Toast(context, "Button Pressed");
         Log.v("onReceive", "Power button is pressed." + countPowerOff);
         countPowerOff++;
         Log.d("Delay is ", String.valueOf(Preferences.cameraClickDelay));
@@ -63,10 +63,11 @@ public class CameraHandlerReceiver extends BroadcastReceiver {
 
     private static List<CameraHandlerReceiver> instances = new ArrayList();
 
-    public static CameraHandlerReceiver createMyObject() {
+    public static CameraHandlerReceiver createMyObject(Context context) {
         CameraHandlerReceiver o = new CameraHandlerReceiver();
         Log.d("Created an object", String.valueOf(o.hashCode()));
         instances.add((o));
+        Toast(context, "Started Service");
         return o;
     }
 

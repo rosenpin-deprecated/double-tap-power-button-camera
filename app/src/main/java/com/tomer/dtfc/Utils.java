@@ -11,6 +11,6 @@ import android.widget.Toast;
 public class Utils {
     public static void Toast(Context c, String t) {
         if (Preferences.debug)
-            Toast.makeText(c, t, Toast.LENGTH_LONG).show();
+            Toast.makeText(c, t, Toast.LENGTH_SHORT).show();
     }
 }
