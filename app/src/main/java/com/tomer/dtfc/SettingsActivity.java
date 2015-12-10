@@ -24,9 +24,10 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         addPreferencesFromResource(R.xml.prefs);
         PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
         Preferences.initialize(getApplicationContext());
+        killBrodcastReciever();
         if (Preferences.enabled)
             startBrodcastReciever();
-        LinearLayout root = (LinearLayout)findViewById(android.R.id.list).getParent().getParent().getParent();
+        LinearLayout root = (LinearLayout) findViewById(android.R.id.list).getParent().getParent().getParent();
         Toolbar bar = (Toolbar) LayoutInflater.from(this).inflate(R.layout.toolbar, root, false);
         root.addView(bar, 0);
         bar.setTitle(R.string.app_name);
@@ -40,25 +41,31 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         mReceiver = new CameraHandlerReceiver();
         registerReceiver(mReceiver, filter);
         Toast.makeText(getApplicationContext(), "Started, please try to double tap your power button", Toast.LENGTH_LONG).show();
-
     }
 
     public void killBrodcastReciever() {
-        ComponentName receiver = new ComponentName(getApplicationContext(), CameraHandlerReceiver.class);
+        try {
+            ComponentName receiver = new ComponentName(getApplicationContext(), CameraHandlerReceiver.class);
 
-        PackageManager pm = getApplicationContext().getPackageManager();
+            PackageManager pm = getApplicationContext().getPackageManager();
 
-        pm.setComponentEnabledSetting(receiver,
-                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                PackageManager.DONT_KILL_APP);
+            pm.setComponentEnabledSetting(receiver,
+                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                    PackageManager.DONT_KILL_APP);
+            unregisterReceiver(mReceiver);
+        }
+        catch (Exception e){
+            Log.d("Service is already dead",e.getMessage());
+        }
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Log.d("Preference changed", key);
         Preferences.initialize(getApplicationContext());
-        killBrodcastReciever();
-        if (sharedPreferences.getBoolean("enabled", false))
+        if(Preferences.enabled)
             startBrodcastReciever();
+        else
+            killBrodcastReciever();
     }
 }
