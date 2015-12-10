@@ -7,7 +7,7 @@
         android:title="@string/enabled" />
 
     <ListPreference
-        android:defaultValue="180"
+        android:defaultValue="2000"
         android:entries="@array/pref_click_delay_list"
         android:entryValues="@array/pref_click_delay_values"
         android:key="click_delay"

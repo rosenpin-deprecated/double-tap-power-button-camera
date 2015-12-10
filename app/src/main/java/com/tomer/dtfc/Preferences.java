@@ -18,7 +18,7 @@ public class Preferences {
         SharedPreferences preferences =
                 PreferenceManager.getDefaultSharedPreferences(context);
         enabled = preferences.getBoolean("enabled", true);
-        cameraClickDelay = Integer.parseInt(preferences.getString("click_delay", String.valueOf(cameraClickDelay)));
+        cameraClickDelay = Integer.parseInt(preferences.getString("click_delay", "2000"));
         debug = preferences.getBoolean("debug", false);
         clicks = preferences.getBoolean("triple", false) ? 3 : 2;
         Log.d("Clicks is ", String.valueOf(clicks));
