@@ -21,6 +21,8 @@
     <string name="enabled">Enable</string>
     <string name="enabled_desciption">Enable Double Tap For Camera</string>
     <string name="pref_click_delay_description">How long between the first click to the second?</string>
+    <string name="debugging_mode">Debugging mode</string>
+    <string name="debugging_mode_summary">Show debugging messages</string>
     <string-array name="pref_click_delay_list">
         <item>1 second</item>
         <item>2 seconds</item>

@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+import static com.tomer.dtfc.Utils.Toast;
 
 public class SettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     CameraHandlerReceiver mReceiver;
@@ -38,9 +39,9 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     public void startBrodcastReciever() {
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
-        mReceiver = new CameraHandlerReceiver();
+        mReceiver =  CameraHandlerReceiver.createMyObject();
         registerReceiver(mReceiver, filter);
-        Toast.makeText(getApplicationContext(), "Started, please try to double tap your power button", Toast.LENGTH_LONG).show();
+        Toast(getApplicationContext(), "Started, please try to double tap your power button");
     }
 
     public void killBrodcastReciever() {
@@ -53,9 +54,12 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
                     PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                     PackageManager.DONT_KILL_APP);
             unregisterReceiver(mReceiver);
-        }
-        catch (Exception e){
-            Log.d("Service is already dead",e.getMessage());
+            for(int i = 0;i<CameraHandlerReceiver.getInstances().size();i++){
+                Log.d("Number of instances ", String.valueOf(i));
+                unregisterReceiver(CameraHandlerReceiver.getInstances().get(i));
+            }
+        } catch (Exception e) {
+            Log.d("Service is already dead", e.getMessage());
         }
     }
 
@@ -63,9 +67,10 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Log.d("Preference changed", key);
         Preferences.initialize(getApplicationContext());
-        if(Preferences.enabled)
+        if (Preferences.enabled) {
+            killBrodcastReciever();
             startBrodcastReciever();
-        else
+        } else
             killBrodcastReciever();
     }
 }

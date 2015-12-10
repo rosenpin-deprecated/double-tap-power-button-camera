@@ -8,7 +8,11 @@ import android.os.Handler;
 import android.os.PowerManager;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.tomer.dtfc.Utils.Toast;
 
 
 /**
@@ -17,6 +21,7 @@ import android.widget.Toast;
 public class CameraHandlerReceiver extends BroadcastReceiver {
     static int countPowerOff = 0;
     PowerManager pm;
+    protected PowerManager.WakeLock mWakeLock;
     KeyguardManager keyguardManager;
     KeyguardManager.KeyguardLock keyguardLock;
     Handler handler = new Handler();
@@ -35,8 +40,9 @@ public class CameraHandlerReceiver extends BroadcastReceiver {
             wl.acquire();
             keyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
             keyguardLock = keyguardManager.newKeyguardLock("TAG");
+            this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "Turn Screen On");
         }
-        Toast.makeText(context, "STARTED SERVICE", Toast.LENGTH_LONG).show();
+        Toast(context, "STARTED SERVICE");
         Log.v("onReceive", "Power button is pressed." + countPowerOff);
         countPowerOff++;
         Log.d("Delay is ", String.valueOf(Preferences.cameraClickDelay));
@@ -44,13 +50,33 @@ public class CameraHandlerReceiver extends BroadcastReceiver {
         if (countPowerOff == 2) {
             keyguardLock.reenableKeyguard();
             keyguardLock.disableKeyguard();
-
             System.out.println("OPENING CAMERA");
             Intent cameraIntent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
 
             context.startActivity(cameraIntent);
             countPowerOff = 0;
             handler.removeCallbacks(runnable);
+            this.mWakeLock.release();
+            this.mWakeLock.acquire();
         }
+    }
+
+    private static List<CameraHandlerReceiver> instances = new ArrayList();
+
+    public static CameraHandlerReceiver createMyObject() {
+        CameraHandlerReceiver o = new CameraHandlerReceiver();
+        Log.d("Created an object", String.valueOf(o.hashCode()));
+        instances.add((o));
+        return o;
+    }
+
+    public static List<CameraHandlerReceiver> getInstances() {
+        return instances;
+    }
+
+
+
+    private CameraHandlerReceiver() {
+        // Not allowed
     }
 }

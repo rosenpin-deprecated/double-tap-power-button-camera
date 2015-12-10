@@ -10,12 +10,14 @@ import android.preference.PreferenceManager;
 public class Preferences {
     public static int cameraClickDelay = R.integer.defaultTimeout;
     public static boolean enabled = true;
+    public static boolean debug = false;
 
     public static void initialize(Context context) {
         SharedPreferences preferences =
                 PreferenceManager.getDefaultSharedPreferences(context);
         enabled = preferences.getBoolean("enabled", true);
         cameraClickDelay = Integer.parseInt(preferences.getString("click_delay", String.valueOf(cameraClickDelay)));
+        debug = preferences.getBoolean("debug", false);
     }
 
 }
