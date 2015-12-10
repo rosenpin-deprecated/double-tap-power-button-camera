@@ -42,12 +42,13 @@ public class CameraHandlerReceiver extends BroadcastReceiver {
             keyguardLock = keyguardManager.newKeyguardLock("TAG");
             this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "Turn Screen On");
         }
+        countPowerOff++;
         Toast(context, "Button Pressed");
         Log.v("onReceive", "Power button is pressed." + countPowerOff);
-        countPowerOff++;
         Log.d("Delay is ", String.valueOf(Preferences.cameraClickDelay));
-        handler.postDelayed(runnable, Preferences.cameraClickDelay);
-        if (countPowerOff == 2) {
+        Log.d("Current clicks are ", String.valueOf(countPowerOff));
+        Log.d("Clicks need to be ", String.valueOf(Preferences.clicks));
+        if (countPowerOff == Preferences.clicks) {
             this.mWakeLock.release();
             this.mWakeLock.acquire();
             keyguardLock.reenableKeyguard();
@@ -59,6 +60,7 @@ public class CameraHandlerReceiver extends BroadcastReceiver {
             countPowerOff = 0;
             handler.removeCallbacks(runnable);
         }
+        handler.postDelayed(runnable, (long) (Preferences.cameraClickDelay*1.5));
     }
 
     private static List<CameraHandlerReceiver> instances = new ArrayList();

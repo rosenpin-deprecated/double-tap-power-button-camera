@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
@@ -16,7 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import static com.tomer.dtfc.Utils.Toast;
 
-public class SettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class SettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
     CameraHandlerReceiver mReceiver;
 
     @Override
@@ -33,7 +35,14 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         root.addView(bar, 0);
         bar.setTitle(R.string.app_name);
         bar.setTitleTextColor(getResources().getColor(android.R.color.white));
-
+        findPreference("github").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/rosenpin/Double-Tap-Power-Button-For-Camera"));
+                startActivity(browserIntent);
+                return true;
+            }
+        });
     }
 
     public void startBrodcastReciever() {
